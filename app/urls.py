@@ -14,6 +14,8 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
 from knox.views import LogoutView
@@ -22,8 +24,12 @@ from account.views import LoginAPI, RegisterAPI, UserAPI
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('knox.urls')),
+    path('api/', include('shop.urls')),
     path('api/auth/login/', LoginAPI.as_view()),
     path('api/auth/logout/', LogoutView.as_view(), name="knox_logout"),
     path('api/auth/register/', RegisterAPI.as_view()),
     path('api/auth/user/', UserAPI.as_view()),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
