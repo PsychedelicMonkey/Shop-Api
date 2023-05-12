@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'knox',
     'djoser',
+    'corsheaders',
 
     'account.apps.AccountConfig',
     'shop.apps.ShopConfig',
@@ -57,6 +58,7 @@ REST_FRAMEWORK = {
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -141,8 +143,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'static/img')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-EMAIL_HOST = 'localhost'
-EMAIL_PORT = '8025'
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'localhost')
+EMAIL_PORT = os.environ.get('EMAIL_PORT', '8025')
 
 DJOSER = {
     'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
@@ -151,3 +153,7 @@ DJOSER = {
     'SEND_ACTIVATION_EMAIL': True,
     'TOKEN_MODEL': 'knox.models.AuthToken',
 }
+
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',
+]
