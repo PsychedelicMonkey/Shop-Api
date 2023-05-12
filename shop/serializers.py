@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import Order, OrderItem, Product, ProductImage
+from account.serializers import UserSerializer
+from .models import Order, OrderItem, Product, ProductImage, Review
 
 
 class ProductImageSerializer(serializers.ModelSerializer):
@@ -23,6 +24,22 @@ class OrderItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderItem
         fields = ('product', 'quantity', 'product_id')
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+    product_id = serializers.IntegerField(required=True, write_only=True)
+    product = ProductSerializer(many=False, read_only=True)
+    user = UserSerializer(many=False, read_only=True)
+
+    class Meta:
+        model = Review
+        fields = '__all__'
+
+    def validate(self, data):
+        if self.context['request'].method == 'POST':
+            if Review.objects.filter(user=self.context['request'].user, product=data['product_id']).exists():
+                raise serializers.ValidationError('You have already reviewed this product')
+        return data
 
 
 class OrderSerializer(serializers.ModelSerializer):

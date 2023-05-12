@@ -32,6 +32,25 @@ class ProductImage(models.Model):
         return super(ProductImage, self).save(*args, **kwargs)
 
 
+class Review(models.Model):
+    class Rating(models.IntegerChoices):
+        BAD = 1
+        DISAPPOINTING = 2
+        ALRIGHT = 3
+        GOOD = 4
+        AMAZING = 5
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="reviews")
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="reviews")
+    rating = models.IntegerField(choices=Rating.choices, null=False, blank=False)
+    body = models.TextField(null=False, blank=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f'Review: {self.product.name} - {self.user.username}'
+
+
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="orders")
     is_completed = models.BooleanField(default=False)

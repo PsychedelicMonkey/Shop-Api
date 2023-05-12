@@ -1,14 +1,8 @@
 from django.shortcuts import render
 from rest_framework import permissions, viewsets
-from .models import Product
-from .serializers import OrderSerializer, ProductSerializer
-
-
-class IsAdminOrReadOnly(permissions.BasePermission):
-    def has_permission(self, request, view):
-        if request.method in permissions.SAFE_METHODS:
-            return True
-        return request.user.is_staff
+from .models import Product, Review
+from .permissions import IsAdminOrReadOnly, IsOwnerOrReadOnly
+from .serializers import OrderSerializer, ProductSerializer, ReviewSerializer
 
 
 class OrderViewSet(viewsets.ModelViewSet):
@@ -33,3 +27,14 @@ class ProductViewSet(viewsets.ModelViewSet):
     serializer_class = ProductSerializer
 
     permission_classes = [IsAdminOrReadOnly]
+
+
+class ReviewViewSet(viewsets.ModelViewSet):
+    queryset = Review.objects.all()
+
+    serializer_class = ReviewSerializer
+
+    permission_classes = [IsOwnerOrReadOnly]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)

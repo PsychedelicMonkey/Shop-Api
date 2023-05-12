@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Order, OrderItem, Product, ProductImage
+from .models import Order, OrderItem, Product, ProductImage, Review
 
 
 class OrderItemInline(admin.StackedInline):
@@ -21,3 +21,6 @@ class OrderAdmin(admin.ModelAdmin):
 class ProductAdmin(admin.ModelAdmin):
     inlines = [ProductImageInline]
     prepopulated_fields = {"slug": ["name"]}
+
+
+admin.site.register(Review)
