@@ -44,6 +44,7 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'knox',
+    'djoser',
 
     'account.apps.AccountConfig',
     'shop.apps.ShopConfig',
@@ -139,3 +140,14 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'static/img')
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = '8025'
+
+DJOSER = {
+    'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
+    'USERNAME_RESET_CONFIRM_URL': '#/username/reset/confirm/{uid}/{token}',
+    'ACTIVATION_URL': '#/activate/{uid}/{token}',
+    'SEND_ACTIVATION_EMAIL': True,
+    'TOKEN_MODEL': 'knox.models.AuthToken',
+}
