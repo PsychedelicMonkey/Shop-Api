@@ -12,6 +12,12 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    @property
+    def review_score(self):
+        score = sum([review.rating for review in self.reviews.all()])
+        num = self.reviews.count()
+        return score / num
+
     def __str__(self):
         return f'{self.name} ({self.pk})'
 

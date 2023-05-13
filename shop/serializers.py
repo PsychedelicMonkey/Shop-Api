@@ -11,10 +11,23 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     images = ProductImageSerializer(many=True, read_only=True)
+    review_score = serializers.DecimalField(decimal_places=1, max_digits=2)
 
     class Meta:
         model = Product
         fields = '__all__'
+
+
+class ProductReviewSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the Review model without including product information
+    """
+
+    user = UserSerializer(many=False, read_only=True)
+
+    class Meta:
+        model = Review
+        fields = ('id', 'rating', 'body', 'user', 'created_at', 'updated_at')
 
 
 class OrderItemSerializer(serializers.ModelSerializer):

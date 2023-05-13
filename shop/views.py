@@ -1,8 +1,9 @@
 from django.shortcuts import render
-from rest_framework import permissions, viewsets
+from rest_framework import generics, permissions, viewsets
+from rest_framework.response import Response
 from .models import Product, Review
 from .permissions import IsAdminOrReadOnly, IsOwnerOrReadOnly
-from .serializers import OrderSerializer, ProductSerializer, ReviewSerializer
+from .serializers import OrderSerializer, ProductSerializer, ProductReviewSerializer, ReviewSerializer
 
 
 class OrderViewSet(viewsets.ModelViewSet):
@@ -27,6 +28,20 @@ class ProductViewSet(viewsets.ModelViewSet):
     serializer_class = ProductSerializer
 
     permission_classes = [IsAdminOrReadOnly]
+
+
+class ProductReviews(viewsets.GenericViewSet):
+    """
+    Retrieve all reviews for a given product
+    """
+
+    queryset = Review.objects.all()
+    serializer_class = ProductReviewSerializer
+
+    def retrieve(self, request, pk=None):
+        queryset = Review.objects.filter(product=pk).order_by('-created_at')
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
