@@ -1,8 +1,8 @@
 from django.shortcuts import render
-from rest_framework import generics, permissions, viewsets
+from rest_framework import permissions, viewsets
 from rest_framework.response import Response
 from .models import Product, Review
-from .permissions import IsAdminOrReadOnly, IsOwnerOrReadOnly
+from .permissions import IsAdminOrReadOnly
 from .serializers import OrderSerializer, ProductSerializer, ProductReviewSerializer, ReviewSerializer
 
 
@@ -36,6 +36,7 @@ class ProductReviews(viewsets.GenericViewSet):
     """
 
     queryset = Review.objects.all()
+
     serializer_class = ProductReviewSerializer
 
     def retrieve(self, request, pk=None):
@@ -45,11 +46,18 @@ class ProductReviews(viewsets.GenericViewSet):
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
-    queryset = Review.objects.all()
+    """
+    Retrieve all reviews created by the currently signed-in user
+    """
 
     serializer_class = ReviewSerializer
 
-    permission_classes = [IsOwnerOrReadOnly]
+    permission_classes = [
+        permissions.IsAuthenticated,
+    ]
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+    def get_queryset(self):
+        return self.request.user.reviews.all()
