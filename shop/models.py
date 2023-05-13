@@ -14,9 +14,12 @@ class Product(models.Model):
 
     @property
     def review_score(self):
-        score = sum([review.rating for review in self.reviews.all()])
-        num = self.reviews.count()
-        return score / num
+        try:
+            score = sum([review.rating for review in self.reviews.all()])
+            num = self.reviews.count()
+            return score / num
+        except ZeroDivisionError as e:
+            return None
 
     def __str__(self):
         return f'{self.name} ({self.pk})'
