@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'corsheaders',
 
     'account.apps.AccountConfig',
+    'order.apps.OrderConfig',
     'shop.apps.ShopConfig',
 ]
 

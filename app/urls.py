@@ -24,6 +24,7 @@ from account.views import LoginAPI, UserAPI
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('knox.urls')),
+    path('api/', include('order.urls')),
     path('api/', include('shop.urls')),
     path('auth/', include('djoser.urls')),
     path('api/auth/login/', LoginAPI.as_view()),
