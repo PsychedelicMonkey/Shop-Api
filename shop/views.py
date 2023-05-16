@@ -7,16 +7,25 @@ from .serializers import ProductSerializer, ProductReviewSerializer, ReviewSeria
 
 
 class ProductViewSet(viewsets.ModelViewSet):
+    """
+    View all products
+    Permissions: Non-admin users have read-only permissions
+
+    GET /api/products/
+    GET /api/products/{product-slug}
+    """
+
     queryset = Product.objects.all()
-
     serializer_class = ProductSerializer
-
     permission_classes = [IsAdminOrReadOnly]
+    lookup_field = 'slug'
 
 
 class ProductReviews(viewsets.GenericViewSet):
     """
     Retrieve all reviews for a given product
+
+    GET /api/product-reviews/{product-id}
     """
 
     queryset = Review.objects.all()
