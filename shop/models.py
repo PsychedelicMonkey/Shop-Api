@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.utils.html import mark_safe
 from PIL import Image
 
 
@@ -14,12 +15,32 @@ class Product(models.Model):
 
     @property
     def review_score(self):
+        """
+        Calculates the average review score for a product instance
+        """
+
         try:
             score = sum([review.rating for review in self.reviews.all()])
             num = self.reviews.count()
             return score / num
         except ZeroDivisionError as e:
             return None
+
+    @property
+    def review_count(self):
+        """
+        Returns the total number of reviews for a product instance
+        """
+
+        return self.reviews.count()
+
+    @staticmethod
+    def get_product_count():
+        """
+        Returns the total number of products
+        """
+
+        return Product.objects.count()
 
     def __str__(self):
         return f'{self.name} ({self.pk})'
@@ -39,6 +60,12 @@ class ProductImage(models.Model):
         self.width = width
         self.height = height
         return super(ProductImage, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return f'Product image: {self.pk}'
+
+    def img_preview(self):
+        return mark_safe(f'<img src="{self.image.url}" alt"{self.caption}" width="150" />')
 
 
 class Review(models.Model):
