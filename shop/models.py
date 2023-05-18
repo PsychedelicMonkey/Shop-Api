@@ -42,6 +42,17 @@ class Product(models.Model):
 
         return Product.objects.count()
 
+    def img_tag(self):
+        """
+        Display preview image in admin site
+        """
+
+        try:
+            img = mark_safe(f'<img src="{self.images.first().image.url}" alt="" width="80" />')
+        except AttributeError:
+            img = mark_safe('<img src="" alt="No image found" />')
+        return img
+
     def __str__(self):
         return f'{self.name} ({self.pk})'
 
@@ -64,7 +75,11 @@ class ProductImage(models.Model):
     def __str__(self):
         return f'Product image: {self.pk}'
 
-    def img_preview(self):
+    def img_tag(self):
+        """
+        Display preview image in admin site
+        """
+
         return mark_safe(f'<img src="{self.image.url}" alt"{self.caption}" width="150" />')
 
 
