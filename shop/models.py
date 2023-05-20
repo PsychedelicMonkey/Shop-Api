@@ -28,6 +28,16 @@ class Color(models.Model):
         return self.color
 
 
+class Size(models.Model):
+    size = models.CharField(max_length=50, null=False, blank=False)
+
+    class Meta:
+        ordering = ("size",)
+
+    def __str__(self):
+        return self.size
+
+
 class Product(models.Model):
     name = models.CharField(max_length=125, null=False, blank=False)
     slug = models.SlugField(max_length=255, null=False, blank=False, unique=True)
@@ -36,6 +46,7 @@ class Product(models.Model):
     quantity = models.IntegerField(null=True, blank=True)
     categories = models.ManyToManyField(Category, blank=True)
     colors = models.ManyToManyField(Color, blank=True)
+    sizes = models.ManyToManyField(Size, through="ProductSize", blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -108,6 +119,13 @@ class ProductImage(models.Model):
         """
 
         return mark_safe(f'<img src="{self.image.url}" alt"{self.caption}" width="150" />')
+
+
+class ProductSize(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    color = models.ForeignKey(Color, on_delete=models.CASCADE)
+    size = models.ForeignKey(Size, on_delete=models.CASCADE)
+    count = models.PositiveIntegerField(default=1)
 
 
 class Review(models.Model):
