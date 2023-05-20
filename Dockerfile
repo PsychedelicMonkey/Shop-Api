@@ -1,7 +1,7 @@
 FROM python:3.10-alpine
 
 RUN apk update --no-cache && \
-    apk add gcc python3-dev libffi-dev
+    apk add gcc python3-dev libffi-dev libpq-dev
 
 WORKDIR /usr/src/app
 
