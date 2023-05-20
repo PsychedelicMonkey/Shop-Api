@@ -1,5 +1,8 @@
 from django.contrib import admin
-from .models import Product, ProductImage, Review
+from .models import Category, Product, ProductImage, Review
+
+admin.site.register(Category)
+admin.site.register(Review)
 
 
 class ProductImageInline(admin.TabularInline):
@@ -11,9 +14,10 @@ class ProductImageInline(admin.TabularInline):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    inlines = [ProductImageInline]
-    list_display = ("name", "img_tag",)
+    filter_horizontal = ("categories",)
+    inlines = (ProductImageInline,)
+    list_display_links = ("img_tag", "name",)
+    list_display = ("img_tag", "name", "price",)
+    list_filter = ("name", "price", "categories",)
     prepopulated_fields = {"slug": ["name"]}
 
-
-admin.site.register(Review)

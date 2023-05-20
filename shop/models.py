@@ -4,12 +4,27 @@ from django.utils.html import mark_safe
 from PIL import Image
 
 
+class Category(models.Model):
+    name = models.CharField(max_length=50, null=False, blank=False)
+    description = models.TextField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ("name",)
+        verbose_name_plural = "categories"
+
+    def __str__(self):
+        return self.name
+
+
 class Product(models.Model):
     name = models.CharField(max_length=125, null=False, blank=False)
     slug = models.SlugField(max_length=255, null=False, blank=False, unique=True)
     description = models.TextField(null=True, blank=True)
     price = models.DecimalField(decimal_places=2, max_digits=7, null=False, blank=False)
     quantity = models.IntegerField(null=True, blank=True)
+    categories = models.ManyToManyField(Category, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -100,4 +115,3 @@ class Review(models.Model):
 
     def __str__(self):
         return f'Review: {self.product.name} - {self.user.username}'
-    

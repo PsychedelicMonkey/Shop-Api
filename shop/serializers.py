@@ -1,6 +1,12 @@
 from rest_framework import serializers
 from account.serializers import UserSerializer
-from .models import Product, ProductImage, Review
+from .models import Category, Product, ProductImage, Review
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ("name", "description",)
 
 
 class ProductImageSerializer(serializers.ModelSerializer):
@@ -10,6 +16,7 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
+    categories = CategorySerializer(many=True, read_only=True)
     images = ProductImageSerializer(many=True, read_only=True)
     review_score = serializers.DecimalField(decimal_places=1, max_digits=2)
 
