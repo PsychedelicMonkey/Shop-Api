@@ -1,20 +1,21 @@
 from django.contrib import admin
-from .models import Category, Product, ProductImage, Review
+from .models import Category, Color, Product, ProductImage, Review
 
 admin.site.register(Category)
+admin.site.register(Color)
 admin.site.register(Review)
 
 
 class ProductImageInline(admin.TabularInline):
     model = ProductImage
-    fields = ("img_tag", "image", "caption",)
+    fields = ("img_tag", "image", "caption", "color",)
     readonly_fields = ("img_tag",)
     extra = 0
 
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    filter_horizontal = ("categories",)
+    filter_horizontal = ("categories", "colors",)
     inlines = (ProductImageInline,)
     list_display_links = ("img_tag", "name",)
     list_display = ("img_tag", "name", "price",)

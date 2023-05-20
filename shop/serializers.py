@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from account.serializers import UserSerializer
-from .models import Category, Product, ProductImage, Review
+from .models import Category, Color, Product, ProductImage, Review
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -9,14 +9,23 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ("name", "description",)
 
 
+class ColorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Color
+        fields = '__all__'
+
+
 class ProductImageSerializer(serializers.ModelSerializer):
+    color = ColorSerializer(many=False, read_only=True)
+
     class Meta:
         model = ProductImage
-        fields = ('image', 'caption', 'width', 'height',)
+        fields = ('image', 'caption', 'width', 'height', 'color',)
 
 
 class ProductSerializer(serializers.ModelSerializer):
     categories = CategorySerializer(many=True, read_only=True)
+    colors = ColorSerializer(many=True, read_only=True)
     images = ProductImageSerializer(many=True, read_only=True)
     review_score = serializers.DecimalField(decimal_places=1, max_digits=2)
 

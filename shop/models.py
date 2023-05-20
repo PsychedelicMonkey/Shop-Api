@@ -18,6 +18,16 @@ class Category(models.Model):
         return self.name
 
 
+class Color(models.Model):
+    color = models.CharField(max_length=50, null=False, blank=False)
+
+    class Meta:
+        ordering = ("color",)
+
+    def __str__(self):
+        return self.color
+
+
 class Product(models.Model):
     name = models.CharField(max_length=125, null=False, blank=False)
     slug = models.SlugField(max_length=255, null=False, blank=False, unique=True)
@@ -25,6 +35,7 @@ class Product(models.Model):
     price = models.DecimalField(decimal_places=2, max_digits=7, null=False, blank=False)
     quantity = models.IntegerField(null=True, blank=True)
     categories = models.ManyToManyField(Category, blank=True)
+    colors = models.ManyToManyField(Color, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -78,6 +89,7 @@ class ProductImage(models.Model):
     caption = models.CharField(max_length=255, null=True, blank=True)
     width = models.IntegerField(null=True, blank=True)
     height = models.IntegerField(null=True, blank=True)
+    color = models.ForeignKey(Color, on_delete=models.CASCADE, null=True, blank=True)
 
     def save(self, *args, **kwargs):
         super(ProductImage, self).save(*args, **kwargs)
